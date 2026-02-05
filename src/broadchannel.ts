@@ -7,21 +7,38 @@ export enum PresentadorEvent {
 export enum ReproductorEvent {
     stop = 'REPRODUCTOR@STOP'
 }
-type BroadcastChannelEvent = PresentadorEvent | ReproductorEvent;
-type ListenedEvent<T> = {
-    type: BroadcastChannelEvent
-    data: T
+
+export interface PresentadorEventMap {
+    [PresentadorEvent.show]: { url: string }
+}
+
+export interface ReproductorEventMap {
+    [ReproductorEvent.stop]: void
+}
+
+type GlobalEventMap =
+    & PresentadorEventMap
+    & ReproductorEventMap
+
+type GlobalEvent = keyof GlobalEventMap
+
+type ListenedEvent<E extends GlobalEvent> = {
+    type: E
+    data: GlobalEventMap[E]
 }
 
 export function useBroadcastChannel() {
     const channel = new BroadcastChannel('auth_channel');
 
-    function trigger<T>(event: BroadcastChannelEvent, data: T) {
+    function trigger<E extends GlobalEvent>(event: E, data: GlobalEventMap[E]) {
         channel.postMessage({ type: event, data });
     }
 
     const listeners: { [key: string]: Array<(e: MessageEvent) => void> } = {};
-    function listen<T>(event: BroadcastChannelEvent, callback: (e: MessageEvent<ListenedEvent<T>>) => void) {
+    function listen<E extends GlobalEvent>(
+        event: E,
+        callback: (e: MessageEvent<ListenedEvent<E>>) => void
+    ) {
         if (Array.isArray(listeners[event])) {
             listeners[event].push(callback);
             return;

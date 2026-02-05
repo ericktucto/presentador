@@ -24,7 +24,7 @@ const legend = computed(() => {
 })
 function onClick() {
     if (archivo.value instanceof Archivo) {
-        trigger<{ url: string }>(PresentadorEvent.show, { url: toRaw(archivo.value.url) })
+        trigger(PresentadorEvent.show, { url: toRaw(archivo.value.url) })
     }
 }
 </script>

@@ -6,7 +6,7 @@ import { PresentadorEvent, useBroadcastChannel } from '../broadchannel';
 const { listen } = useBroadcastChannel()
 
 onMounted(() => {
-    listen<{ url: string }>(PresentadorEvent.show, (e) => {
+    listen(PresentadorEvent.show, (e) => {
         media.value = e.data.data.url
     });
 });
