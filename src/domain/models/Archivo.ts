@@ -1,7 +1,15 @@
-import { Duration } from "./Duration";
-import { Uuid } from "./Uuid";
+import { Uuid, type UuidInterface } from "./Uuid";
 
-export class Archivo {
+export interface ArchivoInterface {
+    id: Uuid;
+    name: string;
+    url: string;
+    type: string;
+    file: File;
+    isMe(id: UuidInterface): boolean;
+}
+
+export class Archivo implements ArchivoInterface {
     constructor(
         public id: Uuid,
         public name: string,
@@ -9,10 +17,6 @@ export class Archivo {
         public type: string,
         public file: File,
     ) {
-    }
-
-    get duration(): Duration {
-        return new Duration(this);
     }
 
     public isMe(id: Uuid): boolean {

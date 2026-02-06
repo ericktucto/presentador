@@ -1,27 +1,16 @@
 <script setup lang="ts">
-import { computed, type PropType } from 'vue';
-import { Archivo } from '../domain/models/Archivo';
-import { useFilesStore } from '../stores/files';
+import { Archivo } from '../../../domain/models/Archivo';
+import { useFilesStore } from '../../stores/files';
+import { useLegend } from '../../composables/legend';
+import { toRef } from 'vue';
 
 const filesStore = useFilesStore()
 
-const props = defineProps({
-    archivo: {
-        type: Object as PropType<Archivo>,
-        required: true
-    }
-})
-const legend = computed(() => {
-    if (
-        props.archivo.file.type.startsWith("image/")
-    ) {
-        return "Image";
-    }
-    if (props.archivo.file.type.startsWith("video/")) {
-        return `Video • ${props.archivo.duration.toString()}`;
-    }
-    return "Archivo";
-})
+const props = defineProps<{
+    archivo: Archivo
+}>()
+const archivoRef = toRef(props, 'archivo')
+const { legend } = useLegend(archivoRef)
 function onSelect() {
     filesStore.select(props.archivo.id)
 }

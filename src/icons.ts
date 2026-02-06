@@ -3,8 +3,11 @@ import {
     MdSearch,
     MdAddRound,
     MdMicRound,
+    MdSearchRound,
     MdPlaycirclefilledRound,
-    FaExchangeAlt
+    FaExchangeAlt,
+    MdPermmedia,
+    IoSettingsOutline,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -13,6 +16,9 @@ addIcons(
     MdMicRound,
     MdPlaycirclefilledRound,
     FaExchangeAlt,
+    IoSettingsOutline,
+    MdPermmedia,
+    MdSearchRound,
 );
 
 export default OhVueIcon;
