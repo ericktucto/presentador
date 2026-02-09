@@ -1,41 +1,79 @@
 <script setup lang="ts">
-import { computed, toRaw } from 'vue';
+import { computed, ref, toRaw } from 'vue';
 import { useFilesStore } from '../../stores/files';
 import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
 import { Archivo } from '../../../domain/models/Archivo';
 import { useModoStore } from '../../../stores/modo';
+import { useLiveStore } from '../../stores/live';
 
-
+const liveStore = useLiveStore();
 const { trigger } = useBroadcastChannel()
 
 const archivo = computed(() => useFilesStore().currentSelected)
 function onClick() {
     if (archivo.value instanceof Archivo) {
-        trigger(PresentadorEvent.show, { url: toRaw(archivo.value.url) })
+        trigger(PresentadorEvent.show, { url: toRaw(archivo.value.url), uuid: archivo.value.id.toString() })
     }
 }
 </script>
 <template>
-    <div
-        class="px-8 py-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111921] flex items-center justify-center gap-8">
-        <div class="flex items-center gap-2">
-            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Resolution</span>
-            <span class="text-xs font-semibold">3840 x 2160</span>
+    <div class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d141b] flex flex-col">
+        <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 relative group cursor-pointer">
+            <div class="absolute inset-y-0 left-0 bg-primary w-1/3 transition-all"></div>
+            <div
+                class="absolute top-1/2 left-1/3 -translate-y-1/2 size-4 bg-primary rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity border-2 border-white dark:border-slate-900">
+            </div>
+            <div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 pointer-events-none"></div>
         </div>
-        <div class="h-4 w-px bg-slate-800"></div>
-        <div class="flex items-center gap-2">
-            <button @click="onClick"
-                class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-[20px]">delete</span>
-            </button>
-        </div>
-        <div class="h-4 w-px bg-slate-800"></div>
-        <div class="flex items-center gap-2">
-            <button
-                class="p-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
-                @click="useModoStore().change(null)">
-                <v-icon name="fa-exchange-alt" /> Cambiar
-            </button>
+        <div class="px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4 w-1/4">
+                <div
+                    class="flex items-center bg-slate-50 dark:bg-slate-900/50 rounded-lg p-0.5 border border-slate-200 dark:border-slate-800">
+                    <button
+                        class="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors cursor-pointer"
+                        title="Previous">
+                        <v-icon name="md-skipprevious-round" />
+                    </button>
+                    <button
+                        class="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors cursor-pointer"
+                        title="Next">
+                        <v-icon name="md-skipnext-round" />
+                    </button>
+                </div>
+                <span class="text-xs font-mono font-bold text-slate-500">01:12 / 03:45</span>
+            </div>
+            <div class="flex-1 flex items-center justify-center">
+                <div
+                    class="flex items-center bg-slate-50 dark:bg-slate-900/50 rounded-full p-1 border border-slate-200 dark:border-slate-800">
+                    <button
+                        class="size-10 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                        title="Stop">
+                        <v-icon name="md-stop-round" />
+                    </button>
+                    <button
+                        class="size-12 flex items-center justify-center rounded-full bg-primary text-white hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+                        title="Play Master">
+                        <v-icon name="md-playarrow-round" />
+                    </button>
+                </div>
+            </div>
+            <div class="flex items-center gap-6 justify-end w-1/4">
+                <div class="flex items-center gap-3">
+                    <button class="text-slate-400 hover:text-slate-200 transition-colors" title="Toggle Local Audio">
+                        <v-icon name="bi-volume-down-fill" />
+                    </button>
+                    <div class="w-20 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full w-2/3 bg-primary"></div>
+                    </div>
+                </div>
+                <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
+                <button
+                    class="flex items-center gap-2 bg-live text-white px-8 py-2.5 rounded-lg font-black text-sm tracking-widest uppercase live-glow hover:scale-[1.02] active:scale-95 transition-all"
+                    :class="[archivo && liveStore.isLive(archivo) ? 'bg-[#EF4444]' : 'bg-gray-400']" @click="onClick">
+                    <span class="size-2.5 bg-white rounded-full animate-pulse shadow-[0_0_8px_white]"></span>
+                    LIVE
+                </button>
+            </div>
         </div>
     </div>
 </template>

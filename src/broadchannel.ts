@@ -1,19 +1,20 @@
 import { onMounted, onUnmounted } from 'vue';
+import type { UuidInterface } from './domain/models/Uuid';
 
 // EVENTS
 export enum PresentadorEvent {
     show = 'PRESENTADOR@SHOW'
 }
 export enum ReproductorEvent {
-    stop = 'REPRODUCTOR@STOP'
+    load = 'REPRODUCTOR@load'
 }
 
 export interface PresentadorEventMap {
-    [PresentadorEvent.show]: { url: string }
+    [PresentadorEvent.show]: { url: string, uuid: string }
 }
 
 export interface ReproductorEventMap {
-    [ReproductorEvent.stop]: void
+    [ReproductorEvent.load]: { uuid: string }
 }
 
 type GlobalEventMap =

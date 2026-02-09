@@ -3,8 +3,10 @@ import { Archivo } from '../../../domain/models/Archivo';
 import { useFilesStore } from '../../stores/files';
 import { useLegend } from '../../composables/legend';
 import { toRef } from 'vue';
+import { useLiveStore } from '../../stores/live';
 
 const filesStore = useFilesStore()
+const liveStore = useLiveStore()
 
 const props = defineProps<{
     archivo: Archivo
@@ -23,7 +25,15 @@ function onSelect() {
             <img alt="Image thumbnail" class="w-full h-full object-cover" :src="archivo.url">
         </div>
         <div class="flex-1 min-w-0">
-            <p class="text-xs font-medium truncate">{{ archivo.name }}</p>
+            <p class="text-xs font-medium truncate flex w-full justify-between gap-3">
+                <span class="truncate">{{ archivo.name }}</span>
+                <span
+                    class="bg-[#EF4444] text-white text-[9px] px-1.5 py-0.5 rounded font-black tracking-tighter uppercase flex items-center gap-1"
+                    v-show="liveStore.isLive(archivo)">
+                    <v-icon name="md-sensors-round" />
+                    LIVE
+                </span>
+            </p>
             <p class="text-[10px] text-slate-500">{{ legend }}</p>
         </div>
     </div>

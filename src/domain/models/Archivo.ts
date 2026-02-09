@@ -19,7 +19,7 @@ export class Archivo implements ArchivoInterface {
     ) {
     }
 
-    public isMe(id: Uuid): boolean {
+    public isMe(id: UuidInterface): boolean {
         return this.id.toString() === id.toString();
     }
 

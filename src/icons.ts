@@ -11,6 +11,11 @@ import {
     MdHeadphonesRound,
     BiVolumeDownFill,
     BiVolumeUpFill,
+    MdSkipnextRound,
+    MdSkippreviousRound,
+    MdStopRound,
+    MdPlayarrowRound,
+    MdSensorsRound,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -25,6 +30,11 @@ addIcons(
     MdHeadphonesRound,
     BiVolumeDownFill,
     BiVolumeUpFill,
+    MdSkipnextRound,
+    MdSkippreviousRound,
+    MdStopRound,
+    MdPlayarrowRound,
+    MdSensorsRound,
 );
 
 export default OhVueIcon;
