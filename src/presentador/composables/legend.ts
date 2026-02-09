@@ -1,9 +1,9 @@
 import { ref, type Ref, watch } from "vue";
 import type { Archivo } from "../../domain/models/Archivo";
-import { duracionTotal } from "../../utils/mediaplay";
+import { duracionTotal, formatSecondsToMMSS } from "../../utils/mediaplay";
 
 export function useLegend(archivo: Ref<Archivo | null | undefined>) {
-    const legend = ref('Hola')
+    const legend = ref('')
 
     watch(() => archivo.value?.url, async (_url, _prev, onCleanup) => {
         let cancelled = false;
@@ -24,7 +24,7 @@ export function useLegend(archivo: Ref<Archivo | null | undefined>) {
         if (a.file.type.startsWith("video/")) {
             const tiempo = await duracionTotal(a)
             if (!cancelled) {
-                legend.value = `Video • ${tiempo}`;
+                legend.value = `Video • ${formatSecondsToMMSS(tiempo)}`;
             }
             return;
         }

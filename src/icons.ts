@@ -16,6 +16,7 @@ import {
     MdStopRound,
     MdPlayarrowRound,
     MdSensorsRound,
+    MdPauseRound,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -35,6 +36,7 @@ addIcons(
     MdStopRound,
     MdPlayarrowRound,
     MdSensorsRound,
+    MdPauseRound,
 );
 
 export default OhVueIcon;

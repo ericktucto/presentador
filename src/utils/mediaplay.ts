@@ -12,11 +12,10 @@ export function duracionTotal(file: Archivo): Promise<number> {
 
 export function formatSecondsToMMSS(seconds: number) {
     const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+    const secs = Math.trunc(seconds % 60);
 
     const minutesStr = String(mins).padStart(2, "0");
     const secondsStr = String(secs).padStart(2, "0");
 
     return `${minutesStr}:${secondsStr}`;
 }
-

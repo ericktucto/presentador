@@ -7,6 +7,7 @@ export interface ArchivoInterface {
     type: string;
     file: File;
     isMe(id: UuidInterface): boolean;
+    isPlayable: boolean
 }
 
 export class Archivo implements ArchivoInterface {
@@ -17,6 +18,10 @@ export class Archivo implements ArchivoInterface {
         public type: string,
         public file: File,
     ) {
+    }
+
+    get isPlayable() {
+        return this.type.startsWith("video/");
     }
 
     public isMe(id: UuidInterface): boolean {
