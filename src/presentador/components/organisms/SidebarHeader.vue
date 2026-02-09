@@ -1,4 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useFilesStore } from '../../stores/files';
+const filesStore = useFilesStore()
+
+function handleChange(e: InputEvent) {
+    const target = e.target as HTMLInputElement
+    filesStore.setFilter(target.value)
+}
+</script>
 <template>
     <div class="p-6 border-b border-slate-200 dark:border-slate-800">
         <div class="flex items-center justify-between mb-6">
@@ -18,7 +26,7 @@
                 class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]" />
             <input
                 class="w-full bg-white dark:bg-slate-800/50 border-none rounded-lg pl-9 pr-4 py-1.5 text-xs focus:ring-1 focus:ring-primary placeholder:text-slate-500"
-                placeholder="Search assets..." type="text">
+                placeholder="Search assets..." type="text" @input="handleChange">
         </div>
     </div>
 </template>

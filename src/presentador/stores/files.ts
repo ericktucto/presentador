@@ -32,6 +32,9 @@ export const useFilesStore = defineStore("files", {
         }
     },
     actions: {
+        setFilter(f: string) {
+            this.filter = f;
+        },
         add(fl: FileList) {
             Array.from(fl)
                 .forEach(

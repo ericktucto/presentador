@@ -8,6 +8,9 @@ import {
     FaExchangeAlt,
     MdPermmedia,
     IoSettingsOutline,
+    MdHeadphonesRound,
+    BiVolumeDownFill,
+    BiVolumeUpFill,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -19,6 +22,9 @@ addIcons(
     IoSettingsOutline,
     MdPermmedia,
     MdSearchRound,
+    MdHeadphonesRound,
+    BiVolumeDownFill,
+    BiVolumeUpFill,
 );
 
 export default OhVueIcon;

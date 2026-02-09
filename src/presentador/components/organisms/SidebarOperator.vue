@@ -14,15 +14,15 @@
         <div class="bg-black/20 dark:bg-black/40 rounded-lg p-3">
             <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[16px] text-primary">headphones</span>
+                    <v-icon name="md-headphones-round" />
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Headphone Volume</span>
                 </div>
                 <span class="text-[10px] font-mono text-primary">75%</span>
             </div>
             <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[14px] text-slate-500">volume_mute</span>
+                <v-icon name="bi-volume-down-fill" />
                 <input class="flex-1 h-1" max="100" min="0" type="range" value="75">
-                <span class="material-symbols-outlined text-[14px] text-slate-500">volume_up</span>
+                <v-icon name="bi-volume-up-fill" />
             </div>
         </div>
     </div>
