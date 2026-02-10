@@ -24,6 +24,11 @@ export function useMediaStream(archivo: Ref<Archivo | null | undefined>) {
         }
         return mediaStreamStore.playing.isMe(archivo.value.id)
     })
+    const paused = computed(() => mediaStreamStore.paused)
+
+    function isStarting(archivo: Archivo | null | undefined) {
+        return archivo && mediaStreamStore.playing?.isMe(archivo.id)
+    }
 
     function buildPoster(archivo: Archivo): Promise<string> {
         return new Promise((resolve) => {
@@ -89,6 +94,16 @@ export function useMediaStream(archivo: Ref<Archivo | null | undefined>) {
         }
     }
 
+    function go(video: Ref<HTMLVideoElement | null>, time: number) {
+        if (video.value) {
+            video.value.currentTime = time
+        }
+    }
+
+    function percentage(total: number, current: number) {
+        return (current / total) * 100
+    }
+
     return {
         play,
         stop,
@@ -96,5 +111,9 @@ export function useMediaStream(archivo: Ref<Archivo | null | undefined>) {
         poster,
         posterStack,
         isPlaying,
+        paused,
+        isStarting,
+        percentage,
+        go,
     }
 }

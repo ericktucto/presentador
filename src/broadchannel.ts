@@ -4,9 +4,10 @@ import { onMounted, onUnmounted } from 'vue';
 export enum PresentadorEvent {
     show = 'PRESENTADOR@SHOW',
     play = 'PRESENTADOR@PLAY',
-    continue = 'PRESENTADOR@CONTINUE',
     stop = 'PRESENTADOR@STOP',
     pause = 'PRESENTADOR@PAUSE',
+    go = 'PRESENTADOR@GO',
+    updateTime = 'PRESENTADOR@UPDATE_TIME',
 }
 export enum ReproductorEvent {
     load = 'REPRODUCTOR@load',
@@ -17,7 +18,8 @@ export interface PresentadorEventMap {
     [PresentadorEvent.play]: { url: string, uuid: string }
     [PresentadorEvent.stop]: { uuid: string }
     [PresentadorEvent.pause]: { uuid: string }
-    [PresentadorEvent.continue]: { uuid: string }
+    [PresentadorEvent.go]: { uuid: string, time: number }
+    [PresentadorEvent.updateTime]: { video: 'main' | 'aux', url: string, time: number }
 }
 
 export interface ReproductorEventMap {

@@ -1,28 +1,38 @@
 <script setup lang="ts">
-import { computed, toRaw, toRef } from 'vue';
+import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { useFilesStore } from '../../stores/files';
 import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
 import { Archivo } from '../../../domain/models/Archivo';
 import { useLiveStore } from '../../stores/live';
-import { useMediaStreamStore } from '../../stores/mediastream';
 import { useMediaStream } from '../../composables/mediastream';
+import { formatSecondsToMMSS } from '../../../utils/mediaplay';
+import { useMediaStreamStore } from '../../stores/mediastream';
+import { useLegend } from '../../composables/legend';
 
 const filesStore = useFilesStore()
 const liveStore = useLiveStore();
-const { trigger } = useBroadcastChannel()
+const mediaStreamStore = useMediaStreamStore()
+const { trigger, listen } = useBroadcastChannel()
 
 const archivo = computed(() => filesStore.currentSelected)
-const { isPlaying } = useMediaStream(archivo)
+const { total } = useLegend(archivo);
+const { isPlaying, percentage } = useMediaStream(archivo)
+const time = ref(0)
 
 function onClick() {
     if (archivo.value instanceof Archivo) {
         trigger(PresentadorEvent.show, { url: toRaw(archivo.value.url), uuid: archivo.value.id.toString() })
     }
 }
+watch(() => isPlaying.value, (newValue) => {
+    if (!newValue) {
+        time.value = 0
+    }
+})
 function handlePlayOrPause() {
     if (archivo.value instanceof Archivo) {
         // continue or play
-        if (isPlaying.value) {
+        if (!isPlaying.value || (isPlaying.value && mediaStreamStore.paused)) {
             trigger(PresentadorEvent.play, { url: toRaw(archivo.value.url), uuid: archivo.value.id.toString() })
             return;
         }
@@ -34,14 +44,29 @@ function handleStop() {
         trigger(PresentadorEvent.stop, { uuid: archivo.value.id.toString() })
     }
 }
+const bar = ref<HTMLDivElement | null>(null)
+function handleClickBar(e: PointerEvent) {
+    if (archivo.value instanceof Archivo && bar.value) {
+        const target = e.target as HTMLDivElement
+        const mouseX = e.clientX - target.getBoundingClientRect().left;
+        const time = (total.value * mouseX) / bar.value.clientWidth
+        trigger(PresentadorEvent.go, { uuid: archivo.value.id.toString(), time })
+    }
+}
+onMounted(() => {
+    listen(PresentadorEvent.updateTime, (e) => {
+        if (e.data.data.url === archivo.value?.url && isPlaying.value) {
+            time.value = e.data.data.time
+        }
+    })
+})
 </script>
 <template>
-    <div class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d141b] flex flex-col">
-        <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 relative group cursor-pointer">
-            <div class="absolute inset-y-0 left-0 bg-primary w-1/3 transition-all"></div>
-            <div
-                class="absolute top-1/2 left-1/3 -translate-y-1/2 size-4 bg-primary rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity border-2 border-white dark:border-slate-900">
-            </div>
+    <div class="media-controls bg-white dark:bg-[#0d141b] flex flex-col">
+        <div class="media-controls__bar w-full transition-all easy-linear duration-200 bg-slate-100 dark:bg-slate-800 relative group cursor-pointer"
+            @click="handleClickBar" ref="bar">
+            <div class="absolute inset-y-0 left-0 bg-primary
+            transition-[width] duration-200 ease-linear" :style="{ width: `${percentage(total, time)}%` }"></div>
             <div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 pointer-events-none"></div>
         </div>
         <div class="px-8 py-5 flex items-center justify-between">
@@ -59,7 +84,8 @@ function handleStop() {
                         <v-icon name="md-skipnext-round" />
                     </button>
                 </div>
-                <span class="text-xs font-mono font-bold text-slate-500" v-show="archivo?.isPlayable">01:00 /
+                <span class="text-xs font-mono font-bold text-slate-500" v-show="archivo?.isPlayable">{{
+                    formatSecondsToMMSS(time) }} /
                     03:45</span>
             </div>
             <div class="flex-1 items-center justify-center" :class="[archivo?.isPlayable ? 'flex' : 'hidden']">
@@ -73,7 +99,8 @@ function handleStop() {
                     <button
                         class="size-12 flex items-center justify-center rounded-full bg-primary text-white hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
                         @click="handlePlayOrPause" title="Play Master">
-                        <v-icon :name="isPlaying ? 'md-pause-round' : 'md-playarrow-round'" />
+                        <v-icon
+                            :name="!isPlaying || (isPlaying && mediaStreamStore.paused) ? 'md-playarrow-round' : 'md-pause-round'" />
                     </button>
                 </div>
             </div>
@@ -97,3 +124,12 @@ function handleStop() {
         </div>
     </div>
 </template>
+<style scoped>
+.media-controls>.media-controls__bar {
+    height: 2px;
+}
+
+.media-controls:hover>.media-controls__bar {
+    height: 12px;
+}
+</style>

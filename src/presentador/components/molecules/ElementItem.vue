@@ -4,6 +4,7 @@ import { useFilesStore } from '../../stores/files';
 import { useLegend } from '../../composables/legend';
 import { toRef } from 'vue';
 import { useLiveStore } from '../../stores/live';
+import { useMediaStream } from '../../composables/mediastream';
 
 const filesStore = useFilesStore()
 const liveStore = useLiveStore()
@@ -13,6 +14,7 @@ const props = defineProps<{
 }>()
 const archivoRef = toRef(props, 'archivo')
 const { legend } = useLegend(archivoRef)
+const { poster } = useMediaStream(toRef(props.archivo))
 function onSelect() {
     filesStore.select(props.archivo.id)
 }
@@ -23,7 +25,8 @@ function onSelect() {
         @click="onSelect">
         <div
             class="relative size-12 rounded bg-white flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-700">
-            <img alt="Image thumbnail" class="w-full h-full object-cover" :src="archivo.url">
+            <img alt="Image thumbnail" class="w-full h-full object-cover"
+                :src="archivo.isPlayable ? poster : archivo.url">
         </div>
         <div class="flex-1 min-w-0">
             <p class="text-xs font-medium truncate flex w-full justify-between gap-3">

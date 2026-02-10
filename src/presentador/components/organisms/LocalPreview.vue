@@ -6,10 +6,25 @@ import { useMediaStream } from '../../composables/mediastream';
 
 const archivo = computed(() => useFilesStore().currentSelected)
 
-const { listen } = useBroadcastChannel();
+const { trigger, listen } = useBroadcastChannel();
 
 const videoRef = ref<HTMLVideoElement | null>(null)
-const { play, stop, pause, isPlaying, poster } = useMediaStream(archivo);
+const { play, stop, pause, isPlaying, isStarting, poster, go } = useMediaStream(archivo);
+
+function onUpdatedTimeMain() {
+    if (videoRef.value) {
+        trigger(PresentadorEvent.updateTime, {
+            video: 'main',
+            time: videoRef.value.currentTime,
+            url: videoRef.value.src
+        })
+    }
+}
+function onPause() {
+    if (archivo.value) {
+        trigger(PresentadorEvent.pause, { uuid: archivo.value?.id.toString() })
+    }
+}
 
 onMounted(() => {
     listen(PresentadorEvent.play, () => {
@@ -21,6 +36,9 @@ onMounted(() => {
     listen(PresentadorEvent.pause, () => {
         pause(videoRef)
     })
+    listen(PresentadorEvent.go, (e) => {
+        go(videoRef, e.data.data.time)
+    })
 })
 </script>
 <template>
@@ -31,12 +49,11 @@ onMounted(() => {
                 :style="{ backgroundImage: `url('${archivo.url}')` }">
             </div>
             <!-- 1 video to playing and other to live -->
-            <template v-if="archivo?.isPlayable">
-                <video :poster="poster" ref="videoRef" v-show="isPlaying" class="w-full h-full object-cover"></video>
-                <div v-if="!isPlaying" class="bg-center bg-no-repeat bg-contain size-full"
-                    :style="{ backgroundImage: `url('${poster}')` }">
-                </div>
-            </template>
+            <video :poster="poster" ref="videoRef" v-show="isStarting(archivo)" class="w-full h-full object-cover"
+                @timeupdate="onUpdatedTimeMain" @pause="onPause"></video>
+            <div v-if="!isPlaying" class="bg-center bg-no-repeat bg-contain size-full"
+                :style="{ backgroundImage: `url('${poster}')` }">
+            </div>
         </div>
     </div>
 </template>
