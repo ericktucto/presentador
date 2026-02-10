@@ -19,6 +19,21 @@ const { total } = useLegend(archivo);
 const { isPlaying, percentage } = useMediaStream(archivo)
 const time = ref(0)
 
+const isStartIndex = computed(() => {
+    if (!archivo.value) {
+        return undefined
+    }
+    const index = filesStore.files.findIndex(f => archivo.value && f.isMe(archivo.value.id))
+    return index === 0
+})
+const isEndIndex = computed(() => {
+    if (!archivo.value) {
+        return undefined
+    }
+    const index = filesStore.files.findIndex(f => archivo.value && f.isMe(archivo.value.id))
+    return (index + 1) === filesStore.files.length
+})
+
 function onClick() {
     if (archivo.value instanceof Archivo) {
         trigger(PresentadorEvent.show, { url: toRaw(archivo.value.url), uuid: archivo.value.id.toString() })
@@ -53,6 +68,18 @@ function handleClickBar(e: PointerEvent) {
         trigger(PresentadorEvent.go, { uuid: archivo.value.id.toString(), time })
     }
 }
+function handleNext() {
+    console.log("DEBUG", "handleNext");
+    if (archivo.value instanceof Archivo) {
+        trigger(PresentadorEvent.next, {})
+    }
+}
+function handlePrevious() {
+    console.log("DEBUG", "handlePrevious");
+    if (archivo.value instanceof Archivo) {
+        trigger(PresentadorEvent.previous, {})
+    }
+}
 onMounted(() => {
     listen(PresentadorEvent.updateTime, (e) => {
         if (e.data.data.url === archivo.value?.url && isPlaying.value) {
@@ -75,11 +102,13 @@ onMounted(() => {
                     class="flex items-center bg-slate-50 dark:bg-slate-900/50 rounded-lg p-0.5 border border-slate-200 dark:border-slate-800">
                     <button
                         class="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors cursor-pointer"
+                        :disabled="!archivo || filesStore.files.length < 2 || isStartIndex" @click="handlePrevious"
                         title="Previous">
                         <v-icon name="md-skipprevious-round" />
                     </button>
                     <button
                         class="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors cursor-pointer"
+                        :disabled="!archivo || filesStore.files.length < 2 || isEndIndex" @click="handleNext"
                         title="Next">
                         <v-icon name="md-skipnext-round" />
                     </button>

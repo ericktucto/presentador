@@ -55,7 +55,7 @@ export function useMediaStream(archivo: Ref<Archivo | null | undefined>) {
         let cancelled = false;
         onCleanup(() => (cancelled = true))
 
-        if (!archivo.value || posterStack.value[archivo.value.id.toString()]) {
+        if (!archivo.value || !archivo.value.isPlayable || posterStack.value[archivo.value.id.toString()]) {
             return;
         }
         const p = await buildPoster(archivo.value)

@@ -29,6 +29,18 @@ function onPause() {
 }
 
 onMounted(() => {
+    listen(PresentadorEvent.next, (e) => {
+        if (isPlaying.value) {
+            stop(videoRef)
+        }
+        filesStore.next()
+    })
+    listen(PresentadorEvent.previous, (e) => {
+        if (isPlaying.value) {
+            stop(videoRef)
+        }
+        filesStore.previous()
+    })
     listen(PresentadorEvent.delete, (e) => {
         const uuid = Uuid.fromString(e.data.data.uuid)
         if (isPlaying.value && archivo.value && archivo.value.isMe(uuid)) {

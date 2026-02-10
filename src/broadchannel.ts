@@ -4,6 +4,8 @@ import { onMounted, onUnmounted } from 'vue';
 export enum PresentadorEvent {
     show = 'PRESENTADOR@SHOW',
     delete = 'PRESENTADOR@DELETE',
+    previous = 'PRESENTADOR@PREVIOUS',
+    next = 'PRESENTADOR@NEXT',
     play = 'PRESENTADOR@PLAY',
     stop = 'PRESENTADOR@STOP',
     pause = 'PRESENTADOR@PAUSE',
@@ -17,6 +19,8 @@ export enum ReproductorEvent {
 export interface PresentadorEventMap {
     [PresentadorEvent.show]: { url: string, uuid: string }
     [PresentadorEvent.delete]: { uuid: string }
+    [PresentadorEvent.previous]: {}
+    [PresentadorEvent.next]: {}
     [PresentadorEvent.play]: { url: string, uuid: string }
     [PresentadorEvent.stop]: { uuid: string }
     [PresentadorEvent.pause]: { uuid: string }

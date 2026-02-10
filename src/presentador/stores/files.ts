@@ -50,6 +50,25 @@ export const useFilesStore = defineStore("files", {
         },
         select(id: UuidInterface) {
             this.selected = id;
-        }
+        },
+        next() {
+            if (this.selected) {
+                const index = this.files.findIndex(f => this.selected && f.isMe(this.selected));
+                const newSelected = this.files[index + 1]
+                if (newSelected) {
+                    this.selected = newSelected.id
+                }
+            }
+        },
+        previous() {
+            if (this.selected) {
+                const index = this.files.findIndex(f => this.selected && f.isMe(this.selected));
+                const newSelected = this.files[index - 1]
+                console.log(newSelected)
+                if (newSelected) {
+                    this.selected = newSelected.id
+                }
+            }
+        },
     }
 });
