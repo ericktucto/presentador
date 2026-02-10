@@ -18,7 +18,8 @@ function onSelect() {
 }
 </script>
 <template>
-    <div class="flex items-center gap-3 px-4 py-3 cursor-pointer group hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors border-l-3 border-transparent"
+    <div class="flex items-center gap-3 px-4 py-3 cursor-pointer group hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors border-l-3"
+        :class="[filesStore.currentSelected?.isMe(archivo.id) ? 'border-primary' : 'border-transparent']"
         @click="onSelect">
         <div
             class="relative size-12 rounded bg-white flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-700">

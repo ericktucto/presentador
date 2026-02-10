@@ -1,18 +1,37 @@
 <script setup lang="ts">
-import { computed, ref, toRaw } from 'vue';
+import { computed, toRaw, toRef } from 'vue';
 import { useFilesStore } from '../../stores/files';
 import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
 import { Archivo } from '../../../domain/models/Archivo';
-import { useModoStore } from '../../../stores/modo';
 import { useLiveStore } from '../../stores/live';
+import { useMediaStreamStore } from '../../stores/mediastream';
+import { useMediaStream } from '../../composables/mediastream';
 
+const filesStore = useFilesStore()
 const liveStore = useLiveStore();
 const { trigger } = useBroadcastChannel()
 
-const archivo = computed(() => useFilesStore().currentSelected)
+const archivo = computed(() => filesStore.currentSelected)
+const { isPlaying } = useMediaStream(archivo)
+
 function onClick() {
     if (archivo.value instanceof Archivo) {
         trigger(PresentadorEvent.show, { url: toRaw(archivo.value.url), uuid: archivo.value.id.toString() })
+    }
+}
+function handlePlayOrPause() {
+    if (archivo.value instanceof Archivo) {
+        // continue or play
+        if (isPlaying.value) {
+            trigger(PresentadorEvent.play, { url: toRaw(archivo.value.url), uuid: archivo.value.id.toString() })
+            return;
+        }
+        trigger(PresentadorEvent.pause, { uuid: archivo.value.id.toString() })
+    }
+}
+function handleStop() {
+    if (archivo.value instanceof Archivo) {
+        trigger(PresentadorEvent.stop, { uuid: archivo.value.id.toString() })
     }
 }
 </script>
@@ -40,20 +59,21 @@ function onClick() {
                         <v-icon name="md-skipnext-round" />
                     </button>
                 </div>
-                <span class="text-xs font-mono font-bold text-slate-500">01:12 / 03:45</span>
+                <span class="text-xs font-mono font-bold text-slate-500" v-show="archivo?.isPlayable">01:00 /
+                    03:45</span>
             </div>
-            <div class="flex-1 flex items-center justify-center">
+            <div class="flex-1 items-center justify-center" :class="[archivo?.isPlayable ? 'flex' : 'hidden']">
                 <div
-                    class="flex items-center bg-slate-50 dark:bg-slate-900/50 rounded-full p-1 border border-slate-200 dark:border-slate-800">
+                    class="flex items-center bg-slate-50 dark:bg-slate-900/50 rounded-full p-1 border border-slate-200 dark:border-slate-800 gap-2">
                     <button
-                        class="size-10 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-                        title="Stop">
+                        class="size-12 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                        @click="handleStop" title="Stop">
                         <v-icon name="md-stop-round" />
                     </button>
                     <button
                         class="size-12 flex items-center justify-center rounded-full bg-primary text-white hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
-                        title="Play Master">
-                        <v-icon name="md-playarrow-round" />
+                        @click="handlePlayOrPause" title="Play Master">
+                        <v-icon :name="isPlaying ? 'md-pause-round' : 'md-playarrow-round'" />
                     </button>
                 </div>
             </div>
