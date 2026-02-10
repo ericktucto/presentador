@@ -3,8 +3,10 @@ import { computed, onMounted, ref } from 'vue';
 import { useFilesStore } from '../../stores/files';
 import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
 import { useMediaStream } from '../../composables/mediastream';
+import { Uuid } from '../../../domain/models/Uuid';
 
-const archivo = computed(() => useFilesStore().currentSelected)
+const filesStore = useFilesStore()
+const archivo = computed(() => filesStore.currentSelected)
 
 const { trigger, listen } = useBroadcastChannel();
 
@@ -27,6 +29,13 @@ function onPause() {
 }
 
 onMounted(() => {
+    listen(PresentadorEvent.delete, (e) => {
+        const uuid = Uuid.fromString(e.data.data.uuid)
+        if (isPlaying.value && archivo.value && archivo.value.isMe(uuid)) {
+            stop(videoRef)
+        }
+        filesStore.delete(uuid)
+    })
     listen(PresentadorEvent.play, () => {
         play(videoRef)
     })

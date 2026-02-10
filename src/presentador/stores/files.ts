@@ -41,6 +41,13 @@ export const useFilesStore = defineStore("files", {
                     (f) => this.files.push(Archivo.fromFile(f))
                 );
         },
+        delete(id: UuidInterface) {
+            if (this.selected?.toString() === id.toString()) {
+                const index = this.files.findIndex(f => f.isMe(id));
+                this.selected = this.files[index - 1]?.id ?? null
+            }
+            this.files = this.files.filter(f => !f.isMe(id));
+        },
         select(id: UuidInterface) {
             this.selected = id;
         }
