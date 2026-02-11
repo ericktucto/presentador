@@ -1,9 +1,8 @@
 import { defineStore } from "pinia";
-import type { UuidInterface } from "../../domain/models/Uuid";
 import type { ArchivoInterface } from "../../domain/models/Archivo";
 
 interface State {
-    live: UuidInterface | null
+    live: string | null
 }
 
 export const useLiveStore = defineStore("live", {
@@ -11,11 +10,11 @@ export const useLiveStore = defineStore("live", {
         live: null,
     }),
     actions: {
-        setLive(u: UuidInterface) {
-            this.live = u
+        setLive(url: string) {
+            this.live = url
         },
         isLive(archivo: ArchivoInterface) {
-            return this.live && archivo.isMe(this.live)
+            return this.live === archivo.url
         },
     }
 });

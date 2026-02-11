@@ -36,7 +36,11 @@ const isEndIndex = computed(() => {
 
 function onClick() {
     if (archivo.value instanceof Archivo) {
-        trigger(PresentadorEvent.show, { url: toRaw(archivo.value.url), uuid: archivo.value.id.toString() })
+        trigger(
+            PresentadorEvent.live,
+            {
+                url: toRaw(archivo.value.url), uuid: archivo.value.id.toString(), type: archivo.value.isPlayable ? 'video' : 'image',
+            })
     }
 }
 watch(() => isPlaying.value, (newValue) => {
@@ -69,13 +73,11 @@ function handleClickBar(e: PointerEvent) {
     }
 }
 function handleNext() {
-    console.log("DEBUG", "handleNext");
     if (archivo.value instanceof Archivo) {
         trigger(PresentadorEvent.next, {})
     }
 }
 function handlePrevious() {
-    console.log("DEBUG", "handlePrevious");
     if (archivo.value instanceof Archivo) {
         trigger(PresentadorEvent.previous, {})
     }

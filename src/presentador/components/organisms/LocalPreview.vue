@@ -4,11 +4,15 @@ import { useFilesStore } from '../../stores/files';
 import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
 import { useMediaStream } from '../../composables/mediastream';
 import { Uuid } from '../../../domain/models/Uuid';
+import { useLive } from '../../composables/live';
+import { useMediaStreamStore } from '../../stores/mediastream';
 
 const filesStore = useFilesStore()
 const archivo = computed(() => filesStore.currentSelected)
 
+const mediaStreamStore = useMediaStreamStore()
 const { trigger, listen } = useBroadcastChannel();
+const { live } = useLive()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 const { play, stop, pause, isPlaying, isStarting, poster, go } = useMediaStream(archivo);
@@ -59,6 +63,13 @@ onMounted(() => {
     })
     listen(PresentadorEvent.go, (e) => {
         go(videoRef, e.data.data.time)
+    })
+    listen(PresentadorEvent.live, (e) => {
+        if (videoRef.value) {
+            stop(videoRef)
+            live(videoRef.value, e.data.data.url)
+            play(videoRef)
+        }
     })
 })
 </script>

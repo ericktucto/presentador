@@ -1,8 +1,13 @@
 import { onMounted, onUnmounted } from 'vue';
 
 // EVENTS
+export enum WebRTCEvent {
+    offer = 'OFFER',
+    ice = 'ICE',
+    answer = 'ANSWER',
+}
 export enum PresentadorEvent {
-    show = 'PRESENTADOR@SHOW',
+    live = 'PRESENTADOR@LIVE',
     delete = 'PRESENTADOR@DELETE',
     previous = 'PRESENTADOR@PREVIOUS',
     next = 'PRESENTADOR@NEXT',
@@ -16,8 +21,13 @@ export enum ReproductorEvent {
     load = 'REPRODUCTOR@load',
 }
 
+export interface WebRTCEventMap {
+    [WebRTCEvent.offer]: { offer: RTCSessionDescriptionInit }
+    [WebRTCEvent.answer]: { answer: RTCSessionDescriptionInit }
+    [WebRTCEvent.ice]: { candidate: RTCIceCandidateInit | null }
+}
 export interface PresentadorEventMap {
-    [PresentadorEvent.show]: { url: string, uuid: string }
+    [PresentadorEvent.live]: { url: string, uuid: string, type: 'image' | 'video' }
     [PresentadorEvent.delete]: { uuid: string }
     [PresentadorEvent.previous]: {}
     [PresentadorEvent.next]: {}
@@ -35,6 +45,7 @@ export interface ReproductorEventMap {
 type GlobalEventMap =
     & PresentadorEventMap
     & ReproductorEventMap
+    & WebRTCEventMap
 
 type GlobalEvent = keyof GlobalEventMap
 
