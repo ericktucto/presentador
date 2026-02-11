@@ -3,14 +3,11 @@ import { computed, onMounted, ref } from 'vue';
 import { useFilesStore } from '../../stores/files';
 import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
 import { useMediaStream } from '../../composables/mediastream';
-import { Uuid } from '../../../domain/models/Uuid';
 import { useLive } from '../../composables/live';
-import { useMediaStreamStore } from '../../stores/mediastream';
 
 const filesStore = useFilesStore()
 const archivo = computed(() => filesStore.currentSelected)
 
-const mediaStreamStore = useMediaStreamStore()
 const { trigger, listen } = useBroadcastChannel();
 const { live } = useLive()
 
@@ -28,29 +25,29 @@ function onUpdatedTimeMain() {
 }
 function onPause() {
     if (archivo.value) {
-        trigger(PresentadorEvent.pause, { uuid: archivo.value?.id.toString() })
+        trigger(PresentadorEvent.pause, { url: archivo.value.url })
     }
 }
 
 onMounted(() => {
-    listen(PresentadorEvent.next, (e) => {
+    listen(PresentadorEvent.next, () => {
         if (isPlaying.value) {
             stop(videoRef)
         }
         filesStore.next()
     })
-    listen(PresentadorEvent.previous, (e) => {
+    listen(PresentadorEvent.previous, () => {
         if (isPlaying.value) {
             stop(videoRef)
         }
         filesStore.previous()
     })
     listen(PresentadorEvent.delete, (e) => {
-        const uuid = Uuid.fromString(e.data.data.uuid)
-        if (isPlaying.value && archivo.value && archivo.value.isMe(uuid)) {
+        const { url } = e.data.data
+        if (isPlaying.value && archivo.value && archivo.value.isMe(url)) {
             stop(videoRef)
         }
-        filesStore.delete(uuid)
+        filesStore.delete(url)
     })
     listen(PresentadorEvent.play, () => {
         play(videoRef)

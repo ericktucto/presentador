@@ -12,22 +12,22 @@ export function useMediaStream(archivo: Ref<Archivo | null | undefined>) {
 
     const posterStack = ref<PosterInterface>({})
     const poster = computed(() => {
-        if (!archivo.value || !posterStack.value[archivo.value.id.toString()]) {
+        if (!archivo.value || !posterStack.value[archivo.value.url]) {
             return ''
         }
-        return posterStack.value[archivo.value.id.toString()]
+        return posterStack.value[archivo.value.url]
     })
 
     const isPlaying = computed(() => {
         if (!archivo.value || !mediaStreamStore.playing) {
             return false;
         }
-        return mediaStreamStore.playing.isMe(archivo.value.id)
+        return mediaStreamStore.playing.isMe(archivo.value)
     })
     const paused = computed(() => mediaStreamStore.paused)
 
     function isStarting(archivo: Archivo | null | undefined) {
-        return archivo && mediaStreamStore.playing?.isMe(archivo.id)
+        return archivo && mediaStreamStore.playing?.isMe(archivo)
     }
 
     function buildPoster(archivo: Archivo): Promise<string> {
@@ -55,14 +55,14 @@ export function useMediaStream(archivo: Ref<Archivo | null | undefined>) {
         let cancelled = false;
         onCleanup(() => (cancelled = true))
 
-        if (!archivo.value || !archivo.value.isPlayable || posterStack.value[archivo.value.id.toString()]) {
+        if (!archivo.value || !archivo.value.isPlayable || posterStack.value[archivo.value.url]) {
             return;
         }
         const p = await buildPoster(archivo.value)
         if (!cancelled) {
             posterStack.value = {
                 ...toRaw(posterStack.value),
-                [archivo.value.id.toString()]: p
+                [archivo.value.url]: p
             }
         }
     }, { immediate: true })

@@ -4,5 +4,5 @@ import ElementItem from '../molecules/ElementItem.vue'
 const filesStore = useFilesStore()
 </script>
 <template>
-    <ElementItem v-for="file in filesStore.fileList" :key="file.id.toString()" :archivo="file" />
+    <ElementItem v-for="file in filesStore.fileList" :key="file.url" :archivo="file" />
 </template>

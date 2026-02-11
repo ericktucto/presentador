@@ -23,14 +23,14 @@ const isStartIndex = computed(() => {
     if (!archivo.value) {
         return undefined
     }
-    const index = filesStore.files.findIndex(f => archivo.value && f.isMe(archivo.value.id))
+    const index = filesStore.files.findIndex(f => archivo.value && f.isMe(archivo.value))
     return index === 0
 })
 const isEndIndex = computed(() => {
     if (!archivo.value) {
         return undefined
     }
-    const index = filesStore.files.findIndex(f => archivo.value && f.isMe(archivo.value.id))
+    const index = filesStore.files.findIndex(f => archivo.value && f.isMe(archivo.value))
     return (index + 1) === filesStore.files.length
 })
 
@@ -39,7 +39,7 @@ function onClick() {
         trigger(
             PresentadorEvent.live,
             {
-                url: toRaw(archivo.value.url), uuid: archivo.value.id.toString(), type: archivo.value.isPlayable ? 'video' : 'image',
+                url: toRaw(archivo.value.url), type: archivo.value.isPlayable ? 'video' : 'image',
             })
     }
 }
@@ -52,15 +52,15 @@ function handlePlayOrPause() {
     if (archivo.value instanceof Archivo) {
         // continue or play
         if (!isPlaying.value || (isPlaying.value && mediaStreamStore.paused)) {
-            trigger(PresentadorEvent.play, { url: toRaw(archivo.value.url), uuid: archivo.value.id.toString() })
+            trigger(PresentadorEvent.play, { url: toRaw(archivo.value.url) })
             return;
         }
-        trigger(PresentadorEvent.pause, { uuid: archivo.value.id.toString() })
+        trigger(PresentadorEvent.pause, { url: archivo.value.url })
     }
 }
 function handleStop() {
     if (archivo.value instanceof Archivo) {
-        trigger(PresentadorEvent.stop, { uuid: archivo.value.id.toString() })
+        trigger(PresentadorEvent.stop, { url: archivo.value.url })
     }
 }
 const bar = ref<HTMLDivElement | null>(null)
@@ -69,7 +69,7 @@ function handleClickBar(e: PointerEvent) {
         const target = e.target as HTMLDivElement
         const mouseX = e.clientX - target.getBoundingClientRect().left;
         const time = (total.value * mouseX) / bar.value.clientWidth
-        trigger(PresentadorEvent.go, { uuid: archivo.value.id.toString(), time })
+        trigger(PresentadorEvent.go, { url: archivo.value.url, time })
     }
 }
 function handleNext() {

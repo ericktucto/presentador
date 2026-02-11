@@ -27,19 +27,19 @@ export interface WebRTCEventMap {
     [WebRTCEvent.ice]: { candidate: RTCIceCandidateInit | null }
 }
 export interface PresentadorEventMap {
-    [PresentadorEvent.live]: { url: string, uuid: string, type: 'image' | 'video' }
-    [PresentadorEvent.delete]: { uuid: string }
+    [PresentadorEvent.live]: { url: string, type: 'image' | 'video' }
+    [PresentadorEvent.delete]: { url: string }
     [PresentadorEvent.previous]: {}
     [PresentadorEvent.next]: {}
-    [PresentadorEvent.play]: { url: string, uuid: string }
-    [PresentadorEvent.stop]: { uuid: string }
-    [PresentadorEvent.pause]: { uuid: string }
-    [PresentadorEvent.go]: { uuid: string, time: number }
+    [PresentadorEvent.play]: { url: string }
+    [PresentadorEvent.stop]: { url: string }
+    [PresentadorEvent.pause]: { url: string }
+    [PresentadorEvent.go]: { url: string, time: number }
     [PresentadorEvent.updateTime]: { video: 'main' | 'aux', url: string, time: number }
 }
 
 export interface ReproductorEventMap {
-    [ReproductorEvent.load]: { uuid: string }
+    [ReproductorEvent.load]: { url: string }
 }
 
 type GlobalEventMap =

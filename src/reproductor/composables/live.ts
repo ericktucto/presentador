@@ -1,4 +1,4 @@
-import { onMounted, ref } from "vue"
+import { onMounted } from "vue"
 import { useBroadcastChannel, WebRTCEvent } from "../../broadchannel";
 
 export function useLive(video: HTMLVideoElement) {

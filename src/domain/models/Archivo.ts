@@ -1,18 +1,14 @@
-import { Uuid, type UuidInterface } from "./Uuid";
-
 export interface ArchivoInterface {
-    id: Uuid;
     name: string;
     url: string;
     type: string;
     file: File;
-    isMe(id: UuidInterface): boolean;
+    isMe(obj: ArchivoInterface | string): boolean;
     isPlayable: boolean
 }
 
 export class Archivo implements ArchivoInterface {
     constructor(
-        public id: Uuid,
         public name: string,
         public url: string,
         public type: string,
@@ -24,11 +20,11 @@ export class Archivo implements ArchivoInterface {
         return this.type.startsWith("video/");
     }
 
-    public isMe(id: UuidInterface): boolean {
-        return this.id.toString() === id.toString();
+    public isMe(obj: ArchivoInterface | string): boolean {
+        return this.url === (obj instanceof Archivo ? obj.url : obj);
     }
 
     public static fromFile(file: File): Archivo {
-        return new Archivo(new Uuid(), file.name, URL.createObjectURL(file), file.type, file);
+        return new Archivo(file.name, URL.createObjectURL(file), file.type, file);
     }
 }

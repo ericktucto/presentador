@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 import { Archivo, type ArchivoInterface } from "../../domain/models/Archivo";
-import type { UuidInterface } from "../../domain/models/Uuid";
 
 interface State {
     files: ArchivoInterface[],
-    selected: UuidInterface | null,
+    selected: string | null,
     filter: string
 }
 
@@ -41,22 +40,22 @@ export const useFilesStore = defineStore("files", {
                     (f) => this.files.push(Archivo.fromFile(f))
                 );
         },
-        delete(id: UuidInterface) {
-            if (this.selected?.toString() === id.toString()) {
-                const index = this.files.findIndex(f => f.isMe(id));
-                this.selected = this.files[index - 1]?.id ?? null
+        delete(url: string) {
+            if (this.selected?.toString() === url) {
+                const index = this.files.findIndex(f => f.isMe(url));
+                this.selected = this.files[index - 1]?.url ?? null
             }
-            this.files = this.files.filter(f => !f.isMe(id));
+            this.files = this.files.filter(f => !f.isMe(url));
         },
-        select(id: UuidInterface) {
-            this.selected = id;
+        select(url: string) {
+            this.selected = url
         },
         next() {
             if (this.selected) {
                 const index = this.files.findIndex(f => this.selected && f.isMe(this.selected));
                 const newSelected = this.files[index + 1]
                 if (newSelected) {
-                    this.selected = newSelected.id
+                    this.selected = newSelected.url
                 }
             }
         },
@@ -66,7 +65,7 @@ export const useFilesStore = defineStore("files", {
                 const newSelected = this.files[index - 1]
                 console.log(newSelected)
                 if (newSelected) {
-                    this.selected = newSelected.id
+                    this.selected = newSelected.url
                 }
             }
         },
