@@ -9,7 +9,6 @@ pc.addTransceiver("video", { direction: "recvonly" })
 pc.addTransceiver("audio", { direction: "recvonly" })
 
 pc.ontrack = e => {
-    console.log("DEBUG track", e)
     if (videoRef.value) {
         videoRef.value.srcObject = e.streams[0] ?? null
     }
@@ -37,6 +36,8 @@ const media = ref('')
         :style="{ backgroundImage: `url('${media}')` }">
     </div>
     <div class="bg-center flex bg-no-repeat bg-contain size-full items-center justify-center">
-        <video ref="videoRef" class="w-full object-cover" autoplay playsinline></video>
+        <video ref="videoRef"
+            class="object-contain landscape:h-screen landscape:w-auto portrait:w-screen portrait:h-auto" autoplay
+            playsinline></video>
     </div>
 </template>

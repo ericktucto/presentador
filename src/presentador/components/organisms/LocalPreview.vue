@@ -68,8 +68,10 @@ onMounted(() => {
     listen(PresentadorEvent.live, (e) => {
         if (videoRef.value) {
             stop(videoRef)
-            live(videoRef.value, e.data.data.url)
-            play(videoRef)
+            live(videoRef.value, e.data.data.url, e.data.data.type)
+            if (e.data.data.type === 'video') {
+                play(videoRef)
+            }
         }
     })
     listen(PresentadorEvent.change, (e) => {
@@ -82,7 +84,7 @@ onMounted(() => {
     })
 })
 const usarMain = computed(() => {
-    return !liveStore.live || (liveStore.live && liveStore.isLive(archivo.value))
+    return !liveStore.live || (liveStore.live && liveStore.isLive(archivo.value) && archivo.value?.isPlayable)
 })
 </script>
 <template>
