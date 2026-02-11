@@ -4,22 +4,26 @@ import { useFilesStore } from '../../stores/files';
 import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
 import { useMediaStream } from '../../composables/mediastream';
 import { useLive } from '../../composables/live';
+import { useLiveStore } from '../../stores/live';
 
 const filesStore = useFilesStore()
+const liveStore = useLiveStore()
 const archivo = computed(() => filesStore.currentSelected)
 
 const { trigger, listen } = useBroadcastChannel();
 const { live } = useLive()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
-const { play, stop, pause, isPlaying, isStarting, poster, go } = useMediaStream(archivo);
+const videoAux = ref<HTMLVideoElement | null>(null)
+const { play, stop, pause, isPlaying, poster, go, isStarting } = useMediaStream(archivo);
 
 function onUpdatedTimeMain() {
-    if (videoRef.value) {
+    const video = usarMain.value ? videoRef.value : videoAux.value
+    if (video) {
         trigger(PresentadorEvent.updateTime, {
             video: 'main',
-            time: videoRef.value.currentTime,
-            url: videoRef.value.src
+            time: video.currentTime,
+            url: video.src
         })
     }
 }
@@ -31,14 +35,14 @@ function onPause() {
 
 onMounted(() => {
     listen(PresentadorEvent.next, () => {
-        if (isPlaying.value) {
-            stop(videoRef)
+        if (!(liveStore.live && usarMain.value)) {
+            stop(usarMain.value ? videoRef : videoAux)
         }
         filesStore.next()
     })
     listen(PresentadorEvent.previous, () => {
-        if (isPlaying.value) {
-            stop(videoRef)
+        if (!(liveStore.live && usarMain.value)) {
+            stop(usarMain.value ? videoRef : videoAux)
         }
         filesStore.previous()
     })
@@ -50,16 +54,16 @@ onMounted(() => {
         filesStore.delete(url)
     })
     listen(PresentadorEvent.play, () => {
-        play(videoRef)
+        play(usarMain.value ? videoRef : videoAux)
     })
     listen(PresentadorEvent.stop, () => {
-        stop(videoRef)
+        stop(usarMain.value ? videoRef : videoAux)
     })
     listen(PresentadorEvent.pause, () => {
-        pause(videoRef)
+        pause(usarMain.value ? videoRef : videoAux)
     })
     listen(PresentadorEvent.go, (e) => {
-        go(videoRef, e.data.data.time)
+        go(usarMain.value ? videoRef : videoAux, e.data.data.time)
     })
     listen(PresentadorEvent.live, (e) => {
         if (videoRef.value) {
@@ -68,6 +72,17 @@ onMounted(() => {
             play(videoRef)
         }
     })
+    listen(PresentadorEvent.change, (e) => {
+        if (archivo.value) {
+            if (!liveStore.isLive(archivo.value)) {
+                stop(videoAux)
+            }
+        }
+        filesStore.select(e.data.data.url)
+    })
+})
+const usarMain = computed(() => {
+    return !liveStore.live || (liveStore.live && liveStore.isLive(archivo.value))
 })
 </script>
 <template>
@@ -77,9 +92,12 @@ onMounted(() => {
             <div v-if="archivo && !archivo.isPlayable" class="bg-center bg-no-repeat bg-contain size-full"
                 :style="{ backgroundImage: `url('${archivo.url}')` }">
             </div>
-            <!-- 1 video to playing and other to live -->
-            <video :poster="poster" ref="videoRef" v-show="isStarting(archivo)" class="w-full h-full object-cover"
+            <!-- video to live -->
+            <video :poster="poster" ref="videoRef" v-show="usarMain" class="w-full h-full object-cover"
                 @timeupdate="onUpdatedTimeMain" @pause="onPause"></video>
+            <!-- video to playing (aux - when is live) -->
+            <video :poster="poster" ref="videoAux" v-show="!usarMain && isStarting(archivo)"
+                class="w-full h-full object-cover" @timeupdate="onUpdatedTimeMain" @pause="onPause" muted></video>
             <div v-if="!isPlaying" class="bg-center bg-no-repeat bg-contain size-full"
                 :style="{ backgroundImage: `url('${poster}')` }">
             </div>

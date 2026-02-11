@@ -84,16 +84,14 @@ function handlePrevious() {
 }
 onMounted(() => {
     listen(PresentadorEvent.updateTime, (e) => {
-        if (e.data.data.url === archivo.value?.url && isPlaying.value) {
-            time.value = e.data.data.time
-        }
+        time.value = archivo.value?.isMe(e.data.data.url) ? e.data.data.time : 0
     })
 })
 </script>
 <template>
     <div class="media-controls bg-white dark:bg-[#0d141b] flex flex-col">
         <div class="media-controls__bar w-full transition-all easy-linear duration-200 bg-slate-100 dark:bg-slate-800 relative group cursor-pointer"
-            @click="handleClickBar" ref="bar">
+            :class="[archivo?.isPlayable ? 'block' : 'hidden']" @click="handleClickBar" ref="bar">
             <div class="absolute inset-y-0 left-0 bg-primary
             transition-[width] duration-200 ease-linear" :style="{ width: `${percentage(total, time)}%` }"></div>
             <div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 pointer-events-none"></div>

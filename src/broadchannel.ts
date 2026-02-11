@@ -15,6 +15,7 @@ export enum PresentadorEvent {
     stop = 'PRESENTADOR@STOP',
     pause = 'PRESENTADOR@PAUSE',
     go = 'PRESENTADOR@GO',
+    change = 'PRESENTADOR@CHANGE',
     updateTime = 'PRESENTADOR@UPDATE_TIME',
 }
 export enum ReproductorEvent {
@@ -36,6 +37,7 @@ export interface PresentadorEventMap {
     [PresentadorEvent.pause]: { url: string }
     [PresentadorEvent.go]: { url: string, time: number }
     [PresentadorEvent.updateTime]: { video: 'main' | 'aux', url: string, time: number }
+    [PresentadorEvent.change]: { url: string }
 }
 
 export interface ReproductorEventMap {

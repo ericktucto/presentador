@@ -13,7 +13,10 @@ export const useLiveStore = defineStore("live", {
         setLive(url: string) {
             this.live = url
         },
-        isLive(archivo: ArchivoInterface) {
+        isLive(archivo: ArchivoInterface | null | undefined) {
+            if (!archivo) {
+                return false
+            }
             return this.live === archivo.url
         },
     }
