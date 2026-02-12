@@ -77,7 +77,7 @@ onMounted(() => {
     listen(PresentadorEvent.change, (e) => {
         if (archivo.value) {
             if (!liveStore.isLive(archivo.value)) {
-                stop(videoAux)
+                stop(liveStore.live ? videoAux : videoRef)
             }
         }
         filesStore.select(e.data.data.url)
