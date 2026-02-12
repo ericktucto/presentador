@@ -31,6 +31,13 @@ export const useFilesStore = defineStore("files", {
         }
     },
     actions: {
+        setName(a: ArchivoInterface, name: string) {
+            const index = this.files.findIndex(f => f.isMe(a.url))
+            if (!this.files[index]) {
+                return;
+            }
+            this.files[index].name = name;
+        },
         setFilter(f: string) {
             this.filter = f;
         },

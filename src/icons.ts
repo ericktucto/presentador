@@ -18,6 +18,8 @@ import {
     MdSensorsRound,
     MdPauseRound,
     FaTrashAlt,
+    RiEdit2Line,
+    MdSavealtRound,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -39,6 +41,8 @@ addIcons(
     MdSensorsRound,
     MdPauseRound,
     FaTrashAlt,
+    RiEdit2Line,
+    MdSavealtRound,
 );
 
 export default OhVueIcon;
