@@ -4,8 +4,8 @@ import AddFile from '../atoms/AddFile.vue';
 import { useFilesStore } from '../../stores/files';
 </script>
 <template>
-    <div class="flex w-full">
-        <div class="py-2 w-full">
+    <div class="flex w-full flex-1 overflow-y-scroll">
+        <div class="py-2 w-full flex flex-col">
             <div class="px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2 flex-1">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Playlist</span>
@@ -15,7 +15,9 @@ import { useFilesStore } from '../../stores/files';
                 </div>
                 <AddFile />
             </div>
-            <FileList />
+            <div class="overflow-y-scroll">
+                <FileList />
+            </div>
         </div>
     </div>
 </template>

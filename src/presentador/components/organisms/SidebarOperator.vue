@@ -1,6 +1,6 @@
 <script setup lang="ts"></script>
 <template>
-    <div class="mt-auto p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/80">
+    <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/80">
         <div class="flex items-center gap-3">
             <div class="size-10 rounded-full border-2 border-primary overflow-hidden bg-slate-200">
                 <img alt="ERICK TUCTO" class="w-full h-full object-cover"
