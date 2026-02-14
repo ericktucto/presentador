@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useFilesStore } from '../../stores/files';
-import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
+import { PresentadorEvent, ReproductorEvent, useBroadcastChannel } from '../../../broadchannel';
 import { useMediaStream } from '../../composables/mediastream';
 import { useLive } from '../../composables/live';
 import { useLiveStore } from '../../stores/live';
@@ -11,7 +11,7 @@ const liveStore = useLiveStore()
 const archivo = computed(() => filesStore.currentSelected)
 
 const { trigger, listen } = useBroadcastChannel();
-const { live } = useLive()
+const { live, connect } = useLive()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 const videoAux = ref<HTMLVideoElement | null>(null)
@@ -72,6 +72,11 @@ onMounted(() => {
             if (e.data.data.type === 'video') {
                 play(videoRef)
             }
+        }
+    })
+    listen(ReproductorEvent.requestConnection, (e) => {
+        if (videoRef.value) {
+            connect(e.data.data.uuid)
         }
     })
     listen(PresentadorEvent.change, (e) => {

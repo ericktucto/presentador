@@ -5,14 +5,42 @@ import { useLiveStore } from "../stores/live";
 export function useLive() {
     const liveStore = useLiveStore()
     const { listen, trigger } = useBroadcastChannel();
-    const pc = new RTCPeerConnection()
+    const peers: Map<string, RTCPeerConnection> = new Map()
+
+    function createPeerConnection(uuid: string): RTCPeerConnection {
+        const con = new RTCPeerConnection()
+        con.onconnectionstatechange = () => {
+            if (
+                con.connectionState === "failed" ||
+                con.connectionState === "closed"
+            ) {
+                console.log("Closing connection...")
+                con.close()
+                peers.delete(uuid)
+            }
+        }
+
+        con.onnegotiationneeded = async () => {
+            if (con.signalingState !== "stable") return
+
+            const offer = await con.createOffer()
+            await con.setLocalDescription(offer)
+
+            trigger(WebRTCEvent.offer, { offer, uuid })
+        }
+
+        con.onicecandidate = e => {
+            trigger(WebRTCEvent.ice, { candidate: e.candidate?.toJSON() ?? null, uuid })
+        }
+        return con
+    }
 
     function waitForVideoReady(video: HTMLVideoElement): Promise<void> {
         return new Promise(resolve => {
             if (video.readyState >= 2) {
                 resolve()
             } else {
-                video.onloadedmetadata = () => resolve()
+                video.addEventListener('loadedmetadata', () => resolve(), { once: true })
             }
         })
     }
@@ -40,34 +68,67 @@ export function useLive() {
         })
     }
 
+    async function connect(uuid: string) {
+        if (peers.has(uuid)) return
+
+        const pc = createPeerConnection(uuid)
+        pc.createDataChannel('control')
+
+        peers.set(uuid, pc)
+
+        if (liveStore.currentStream) {
+            liveStore.currentStream.getTracks().forEach(track => {
+                pc.addTrack(track, liveStore.currentStream!)
+            })
+        }
+
+        console.log("DEBUG: New connection", uuid)
+        console.log("DEBUG: Actived connections", peers.size)
+    }
+
     async function live(video: HTMLVideoElement, url: string, typeFile: "image" | "video") {
+        if (peers.size === 0) {
+            return;
+        }
         const stream = await getStream(video, url, typeFile)
         if (!stream) {
             liveStore.setLive('')
             return;
         }
 
-        stream.getTracks().forEach(track => pc.addTrack(track, stream))
+        peers.forEach(pc => {
+            stream.getTracks().forEach(track => {
+                if (!pc) {
+                    return;
+                }
+                const sender = pc.getSenders().find(
+                    s => s.track?.kind === track.kind
+                )
 
-        const offer = await pc.createOffer()
-        pc.setLocalDescription(offer)
+                if (sender) {
+                    sender.replaceTrack(track)
+                } else {
+                    pc.addTrack(track, stream)
+                }
+            })
+        })
 
-        trigger(WebRTCEvent.offer, { offer })
-
-
-        pc.onicecandidate = e => {
-            trigger(WebRTCEvent.ice, { candidate: e.candidate?.toJSON() ?? null })
-        }
-        liveStore.setLive(url)
+        liveStore.setLive(url, stream)
     }
 
     onMounted(() => {
         listen(WebRTCEvent.answer, (e) => {
+            const pc = peers.get(e.data.data.uuid)
+            // send message: no exist presentador
+            if (!pc) {
+                return;
+            }
             pc.setRemoteDescription(e.data.data.answer)
         })
     })
 
     return {
-        live
+        live,
+        connect,
     }
 }

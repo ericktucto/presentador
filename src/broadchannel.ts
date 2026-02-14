@@ -6,6 +6,10 @@ export enum WebRTCEvent {
     ice = 'ICE',
     answer = 'ANSWER',
 }
+export enum ProjectEvent {
+    isAllowedPresentador = 'PROJECT@IS_ALLOWED_PRESENTADOR',
+    presentadorIsDeny = 'PRESENTADOR@PRESENTADOR_IS_DENY',
+}
 export enum PresentadorEvent {
     live = 'PRESENTADOR@LIVE',
     delete = 'PRESENTADOR@DELETE',
@@ -19,13 +23,19 @@ export enum PresentadorEvent {
     updateTime = 'PRESENTADOR@UPDATE_TIME',
 }
 export enum ReproductorEvent {
-    load = 'REPRODUCTOR@load',
+    load = 'REPRODUCTOR@LOAD',
+    requestConnection = 'REPRODUCTOR@REQUEST_CONNECTION',
 }
 
+// MAPPERS
 export interface WebRTCEventMap {
-    [WebRTCEvent.offer]: { offer: RTCSessionDescriptionInit }
-    [WebRTCEvent.answer]: { answer: RTCSessionDescriptionInit }
-    [WebRTCEvent.ice]: { candidate: RTCIceCandidateInit | null }
+    [WebRTCEvent.offer]: { offer: RTCSessionDescriptionInit, uuid: string }
+    [WebRTCEvent.answer]: { answer: RTCSessionDescriptionInit, uuid: string }
+    [WebRTCEvent.ice]: { candidate: RTCIceCandidateInit | null, uuid: string }
+}
+export interface ProjectEventMap {
+    [ProjectEvent.isAllowedPresentador]: {}
+    [ProjectEvent.presentadorIsDeny]: {}
 }
 export interface PresentadorEventMap {
     [PresentadorEvent.live]: { url: string, type: 'image' | 'video' }
@@ -42,12 +52,14 @@ export interface PresentadorEventMap {
 
 export interface ReproductorEventMap {
     [ReproductorEvent.load]: { url: string }
+    [ReproductorEvent.requestConnection]: { uuid: string }
 }
 
 type GlobalEventMap =
     & PresentadorEventMap
     & ReproductorEventMap
     & WebRTCEventMap
+    & ProjectEventMap
 
 type GlobalEvent = keyof GlobalEventMap
 

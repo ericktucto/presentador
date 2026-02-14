@@ -1,9 +1,28 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Modo } from '../types';
 import { useModoStore } from '../stores/modo';
+import { ProjectEvent, useBroadcastChannel } from '../broadchannel';
+
+const { listen, trigger } = useBroadcastChannel();
 
 const selected = ref<Modo | null>(null)
+const existsPresentador = ref(false)
+
+function handleChangeSelected(s: Modo | null) {
+    if (s === Modo.presentador) {
+        trigger(ProjectEvent.isAllowedPresentador, {})
+    } else {
+        existsPresentador.value = false
+    }
+
+    selected.value = s
+}
+onMounted(() => {
+    listen(ProjectEvent.presentadorIsDeny, () => {
+        existsPresentador.value = selected.value === Modo.presentador
+    })
+})
 </script>
 <template>
     <div class="absolute w-full h-full flex items-center justify-center bg-black/50 top-0">
@@ -27,7 +46,7 @@ const selected = ref<Modo | null>(null)
                     <div class="grid grid-cols-2 gap-4">
                         <div class="group cursor-pointer p-4 rounded-xl border-2 bg-gray-50 dark:bg-[#1d3a29] hover:border-primary/50 transition-all text-center"
                             :class="{ 'border-[#1980e6] border-solid': selected === Modo.presentador, 'border-transparent': selected !== Modo.presentador }"
-                            @click="selected = Modo.presentador">
+                            @click="handleChangeSelected(Modo.presentador)">
                             <div
                                 class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 text-primary group-hover:scale-110 transition-transform">
                                 <v-icon name="md-mic-round" />
@@ -36,7 +55,7 @@ const selected = ref<Modo | null>(null)
                         </div>
                         <div class="group cursor-pointer p-4 rounded-xl border-2 bg-gray-50 dark:bg-[#1d3a29] hover:border-primary/50 transition-all text-center"
                             :class="{ 'border-[#1980e6] border-solid': selected === Modo.reproductor, 'border-transparent': selected !== Modo.reproductor }"
-                            @click="selected = Modo.reproductor">
+                            @click="handleChangeSelected(Modo.reproductor)">
                             <div
                                 class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 text-primary group-hover:scale-110 transition-transform">
                                 <v-icon name="md-playcirclefilled-round" />
@@ -44,6 +63,13 @@ const selected = ref<Modo | null>(null)
                             <span class="text-sm font-medium dark:text-white">Reproductor</span>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="px-8" v-show="existsPresentador">
+                <div class="alert border border-[#EF4444]/50 bg-[#EF4444]/10 p-3 rounded-lg">
+                    <h3 class="text-[#EF4444] text-sm">Ya existe una pestaña como presentador,
+                        ¿Deseas
+                        usar esta pestaña como presentador?</h3>
                 </div>
             </div>
             <!-- Modal Footer (ButtonGroup) -->
