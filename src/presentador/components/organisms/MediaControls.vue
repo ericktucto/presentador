@@ -36,6 +36,10 @@ const isEndIndex = computed(() => {
 
 function onClick() {
     if (archivo.value instanceof Archivo) {
+        if (liveStore.isLive(archivo.value)) {
+            trigger(PresentadorEvent.endLive, {})
+            return;
+        }
         trigger(
             PresentadorEvent.live,
             {

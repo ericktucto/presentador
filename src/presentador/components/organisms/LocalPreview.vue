@@ -11,7 +11,7 @@ const liveStore = useLiveStore()
 const archivo = computed(() => filesStore.currentSelected)
 
 const { trigger, listen } = useBroadcastChannel();
-const { live, connect } = useLive()
+const { live, connect, off } = useLive()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 const videoAux = ref<HTMLVideoElement | null>(null)
@@ -86,6 +86,12 @@ onMounted(() => {
             }
         }
         filesStore.select(e.data.data.url)
+    })
+    listen(PresentadorEvent.endLive, () => {
+        if (videoRef.value) {
+            off()
+            stop(videoRef)
+        }
     })
 })
 const usarMain = computed(() => {

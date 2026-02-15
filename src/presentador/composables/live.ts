@@ -98,9 +98,6 @@ export function useLive() {
 
         peers.forEach(pc => {
             stream.getTracks().forEach(track => {
-                if (!pc) {
-                    return;
-                }
                 const sender = pc.getSenders().find(
                     s => s.track?.kind === track.kind
                 )
@@ -114,6 +111,22 @@ export function useLive() {
         })
 
         liveStore.setLive(url, stream)
+    }
+
+    async function off() {
+        peers.forEach(pc => {
+            pc.getSenders().forEach(sender => {
+                if (sender.track?.kind === "video") {
+                    sender.replaceTrack(null)
+                }
+                if (sender.track?.kind === "audio") {
+                    sender.replaceTrack(null)
+                }
+            })
+        })
+        if (liveStore.live) {
+            liveStore.setLive('')
+        }
     }
 
     onMounted(() => {
@@ -130,5 +143,6 @@ export function useLive() {
     return {
         live,
         connect,
+        off,
     }
 }

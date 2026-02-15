@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { ReproductorEvent, useBroadcastChannel, WebRTCEvent } from '../../../broadchannel'
+import { PresentadorEvent, ReproductorEvent, useBroadcastChannel, WebRTCEvent } from '../../../broadchannel'
 
 const uuid = ref<string>(crypto.randomUUID());
 
@@ -58,6 +58,11 @@ onMounted(() => {
             return;
         }
         await pc.addIceCandidate(e.data.data.candidate)
+    })
+    listen(PresentadorEvent.endLive, () => {
+        if (videoRef.value) {
+            videoRef.value.srcObject = null
+        }
     })
 });
 

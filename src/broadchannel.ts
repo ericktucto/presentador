@@ -12,6 +12,7 @@ export enum ProjectEvent {
 }
 export enum PresentadorEvent {
     live = 'PRESENTADOR@LIVE',
+    endLive = 'PRESENTADOR@END_LIVE',
     delete = 'PRESENTADOR@DELETE',
     previous = 'PRESENTADOR@PREVIOUS',
     next = 'PRESENTADOR@NEXT',
@@ -48,6 +49,7 @@ export interface PresentadorEventMap {
     [PresentadorEvent.go]: { url: string, time: number }
     [PresentadorEvent.updateTime]: { video: 'main' | 'aux', url: string, time: number }
     [PresentadorEvent.change]: { url: string }
+    [PresentadorEvent.endLive]: {}
 }
 
 export interface ReproductorEventMap {
