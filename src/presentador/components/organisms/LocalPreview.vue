@@ -17,6 +17,14 @@ const videoRef = ref<HTMLVideoElement | null>(null)
 const videoAux = ref<HTMLVideoElement | null>(null)
 const { play, stop, pause, isPlaying, poster, go, isStarting } = useMediaStream(archivo);
 
+function onEnded() {
+    trigger(PresentadorEvent.endLive, {})
+    if (videoRef.value) {
+        off()
+        stop(videoRef)
+        onUpdatedTimeMain()
+    }
+}
 function onUpdatedTimeMain() {
     const video = usarMain.value ? videoRef.value : videoAux.value
     if (video) {
@@ -107,7 +115,7 @@ const usarMain = computed(() => {
             </div>
             <!-- video to live -->
             <video :poster="poster" ref="videoRef" v-show="usarMain" class="w-full h-full object-cover"
-                @timeupdate="onUpdatedTimeMain" @pause="onPause"></video>
+                @timeupdate="onUpdatedTimeMain" @pause="onPause" @ended="onEnded"></video>
             <!-- video to playing (aux - when is live) -->
             <video :poster="poster" ref="videoAux" v-show="!usarMain && isStarting(archivo)"
                 class="w-full h-full object-cover" @timeupdate="onUpdatedTimeMain" @pause="onPause" muted></video>

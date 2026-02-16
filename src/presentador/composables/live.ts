@@ -92,7 +92,7 @@ export function useLive() {
         }
         const stream = await getStream(video, url, typeFile)
         if (!stream) {
-            liveStore.setLive('')
+            liveStore.setLive(null)
             return;
         }
 
@@ -124,9 +124,7 @@ export function useLive() {
                 }
             })
         })
-        if (liveStore.live) {
-            liveStore.setLive('')
-        }
+        liveStore.setLive(null)
     }
 
     onMounted(() => {

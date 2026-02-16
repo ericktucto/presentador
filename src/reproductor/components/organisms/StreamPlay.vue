@@ -60,6 +60,7 @@ onMounted(() => {
         await pc.addIceCandidate(e.data.data.candidate)
     })
     listen(PresentadorEvent.endLive, () => {
+        console.log("Hola erick")
         if (videoRef.value) {
             videoRef.value.srcObject = null
         }

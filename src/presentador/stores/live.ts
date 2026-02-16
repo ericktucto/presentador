@@ -12,7 +12,7 @@ export const useLiveStore = defineStore("live", {
         currentStream: null
     }),
     actions: {
-        setLive(url: string, mediaStream: MediaStream | null = null) {
+        setLive(url: string | null, mediaStream: MediaStream | null = null) {
             this.live = url
             this.currentStream = mediaStream
         },
