@@ -9,6 +9,7 @@ export enum WebRTCEvent {
 export enum ProjectEvent {
     isAllowedPresentador = 'PROJECT@IS_ALLOWED_PRESENTADOR',
     presentadorIsDeny = 'PRESENTADOR@PRESENTADOR_IS_DENY',
+    closeAllPresentador = 'PRESENTADOR@CLOSE_ALL_PRESENTADOR',
 }
 export enum PresentadorEvent {
     live = 'PRESENTADOR@LIVE',
@@ -37,6 +38,7 @@ export interface WebRTCEventMap {
 export interface ProjectEventMap {
     [ProjectEvent.isAllowedPresentador]: {}
     [ProjectEvent.presentadorIsDeny]: {}
+    [ProjectEvent.closeAllPresentador]: { except: string }
 }
 export interface PresentadorEventMap {
     [PresentadorEvent.live]: { url: string, type: 'image' | 'video' }
