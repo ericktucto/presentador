@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useFilesStore } from '../../stores/files';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
 
 const filesStore = useFilesStore()
 const input = ref<HTMLInputElement | null>(null)
@@ -25,7 +28,7 @@ function onLoad(e: Event) {
         class="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold px-3 py-1.5 rounded flex items-center gap-1.5 transition-colors"
         @click="onAdd">
         <v-icon name="md-add-round" />
-        Add files
+        {{ t('addFiles') }}
         <input ref="input" type="file" class="hidden" multiple @change="onLoad" />
     </button>
 </template>

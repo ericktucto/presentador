@@ -8,7 +8,9 @@ import { useMediaStream } from '../../composables/mediastream';
 import { formatSecondsToMMSS } from '../../../utils/mediaplay';
 import { useMediaStreamStore } from '../../stores/mediastream';
 import { useLegend } from '../../composables/legend';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n()
 const filesStore = useFilesStore()
 const liveStore = useLiveStore();
 const mediaStreamStore = useMediaStreamStore()
@@ -106,14 +108,12 @@ onMounted(() => {
                     class="flex items-center bg-slate-50 dark:bg-slate-900/50 rounded-lg p-0.5 border border-slate-200 dark:border-slate-800">
                     <button
                         class="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors cursor-pointer"
-                        :disabled="!archivo || filesStore.files.length < 2 || isStartIndex" @click="handlePrevious"
-                        title="Previous">
+                        :disabled="!archivo || filesStore.files.length < 2 || isStartIndex" @click="handlePrevious">
                         <v-icon name="md-skipprevious-round" />
                     </button>
                     <button
                         class="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors cursor-pointer"
-                        :disabled="!archivo || filesStore.files.length < 2 || isEndIndex" @click="handleNext"
-                        title="Next">
+                        :disabled="!archivo || filesStore.files.length < 2 || isEndIndex" @click="handleNext">
                         <v-icon name="md-skipnext-round" />
                     </button>
                 </div>
@@ -126,12 +126,12 @@ onMounted(() => {
                     class="flex items-center bg-slate-50 dark:bg-slate-900/50 rounded-full p-1 border border-slate-200 dark:border-slate-800 gap-2">
                     <button
                         class="size-12 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-                        @click="handleStop" title="Stop">
+                        @click="handleStop">
                         <v-icon name="md-stop-round" />
                     </button>
                     <button
                         class="size-12 flex items-center justify-center rounded-full bg-primary text-white hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
-                        @click="handlePlayOrPause" title="Play Master">
+                        @click="handlePlayOrPause">
                         <v-icon
                             :name="!isPlaying || (isPlaying && mediaStreamStore.paused) ? 'md-playarrow-round' : 'md-pause-round'" />
                     </button>

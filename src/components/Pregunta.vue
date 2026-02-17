@@ -3,7 +3,9 @@ import { onMounted, ref } from 'vue';
 import { Modo } from '../types';
 import { useModoStore } from '../stores/modo';
 import { ProjectEvent, useBroadcastChannel } from '../broadchannel';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n()
 const { listen, trigger } = useBroadcastChannel();
 
 const selected = ref<Modo | null>(null)
@@ -32,11 +34,11 @@ onMounted(() => {
             <div class="px-8 pt-8 pb-4">
                 <div class="flex items-center justify-between">
                     <h1 class="text-gray-900 dark:text-white text-3xl font-bold tracking-tight">
-                        Seleccionar Rol
+                        {{ t('selectRol') }}
                     </h1>
                 </div>
                 <p class="text-gray-500 dark:text-[#92c9a8] mt-2 text-sm">
-                    Elige cómo deseas interactuar con la plataforma hoy.
+                    {{ t('selectRolLegend') }}
                 </p>
             </div>
             <!-- Modal Content -->
@@ -51,7 +53,7 @@ onMounted(() => {
                                 class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 text-primary group-hover:scale-110 transition-transform">
                                 <v-icon name="md-mic-round" />
                             </div>
-                            <span class="text-sm font-medium dark:text-white">Presentador</span>
+                            <span class="text-sm font-medium dark:text-white">{{ t('presentador') }}</span>
                         </div>
                         <div class="group cursor-pointer p-4 rounded-xl border-2 bg-gray-50 dark:bg-[#1d3a29] hover:border-primary/50 transition-all text-center"
                             :class="{ 'border-[#1980e6] border-solid': selected === Modo.reproductor, 'border-transparent': selected !== Modo.reproductor }"
@@ -60,7 +62,7 @@ onMounted(() => {
                                 class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 text-primary group-hover:scale-110 transition-transform">
                                 <v-icon name="md-playcirclefilled-round" />
                             </div>
-                            <span class="text-sm font-medium dark:text-white">Reproductor</span>
+                            <span class="text-sm font-medium dark:text-white">{{ t('reproductor') }}</span>
                         </div>
                     </div>
                 </div>
@@ -77,7 +79,7 @@ onMounted(() => {
                 <button
                     class="flex-1 bg-primary hover:bg-opacity-90 text-white hover:cursor-pointer font-bold py-3.5 px-6 rounded-full transition-all active:scale-[0.98] shadow-lg shadow-primary/20"
                     @click="useModoStore().change(selected)">
-                    Confirmar
+                    {{ t('confirm') }}
                 </button>
             </div>
         </div>

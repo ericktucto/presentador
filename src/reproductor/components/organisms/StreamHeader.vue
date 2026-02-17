@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { useModoStore } from '../../../stores/modo'
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
 </script>
 <template>
     <nav
@@ -8,7 +11,7 @@ import { useModoStore } from '../../../stores/modo'
             <button
                 class="p-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                 @click="useModoStore().change(null)">
-                <v-icon name="fa-exchange-alt" /> Cambiar
+                <v-icon name="fa-exchange-alt" /> {{ t('changeRol') }}
             </button>
         </div>
     </nav>
