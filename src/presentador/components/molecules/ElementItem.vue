@@ -37,14 +37,18 @@ function handleToggleEditting(e: Event) {
     e.stopPropagation()
     editting.value = !editting.value
 }
+
 </script>
 <template>
     <div class="flex items-center gap-3 px-4 py-3 cursor-pointer group hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors border-l-3"
         :class="[current?.isMe(archivo) ? 'border-primary' : 'border-transparent']" @click="onSelect">
+        <div class="h-12 grid place-items-center cursor-grab"><v-icon name="md-draghandle-round" /></div>
         <div
             class="relative size-12 rounded bg-white flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-700">
-            <img alt="Image thumbnail" class="w-full h-full object-cover"
-                :src="archivo.isPlayable ? poster : archivo.url">
+            <div role="img" aria-label="Image thumbnail" class="w-full h-full bg-cover bg-center bg-no-repeat" :style="{
+                backgroundImage: `url(${archivo.isPlayable ? poster : archivo.url})`
+            }"></div>
+
         </div>
         <div class="flex min-w-0 flex-1">
             <div class="flex-1 min-w-0">

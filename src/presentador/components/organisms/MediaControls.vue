@@ -8,9 +8,7 @@ import { useMediaStream } from '../../composables/mediastream';
 import { formatSecondsToMMSS } from '../../../utils/mediaplay';
 import { useMediaStreamStore } from '../../stores/mediastream';
 import { useLegend } from '../../composables/legend';
-import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n()
 const filesStore = useFilesStore()
 const liveStore = useLiveStore();
 const mediaStreamStore = useMediaStreamStore()

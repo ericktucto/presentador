@@ -20,6 +20,7 @@ import {
     FaTrashAlt,
     RiEdit2Line,
     MdSavealtRound,
+    MdDraghandleRound,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -43,6 +44,7 @@ addIcons(
     FaTrashAlt,
     RiEdit2Line,
     MdSavealtRound,
+    MdDraghandleRound,
 );
 
 export default OhVueIcon;
