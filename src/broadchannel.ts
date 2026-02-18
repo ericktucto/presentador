@@ -1,4 +1,5 @@
 import { onMounted, onUnmounted } from 'vue';
+import type { MediaType } from './types';
 
 // EVENTS
 export enum WebRTCEvent {
@@ -41,7 +42,7 @@ export interface ProjectEventMap {
     [ProjectEvent.closeAllPresentador]: { except: string }
 }
 export interface PresentadorEventMap {
-    [PresentadorEvent.live]: { url: string, type: 'image' | 'video' }
+    [PresentadorEvent.live]: { url: string, type: MediaType }
     [PresentadorEvent.delete]: { url: string }
     [PresentadorEvent.previous]: {}
     [PresentadorEvent.next]: {}

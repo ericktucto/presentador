@@ -21,6 +21,7 @@ import {
     RiEdit2Line,
     MdSavealtRound,
     MdDraghandleRound,
+    MdMusicnoteRound,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -45,6 +46,7 @@ addIcons(
     RiEdit2Line,
     MdSavealtRound,
     MdDraghandleRound,
+    MdMusicnoteRound,
 );
 
 export default OhVueIcon;

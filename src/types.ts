@@ -5,4 +5,6 @@ export enum Modo {
 export enum MediaType {
     image = 'image',
     video = 'video',
+    audio = 'audio',
+    unknown = 'unknown',
 }

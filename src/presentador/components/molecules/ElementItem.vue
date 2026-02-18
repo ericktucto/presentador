@@ -6,6 +6,7 @@ import { computed, ref, toRef } from 'vue';
 import { useLiveStore } from '../../stores/live';
 import { useMediaStream } from '../../composables/mediastream';
 import { PresentadorEvent, useBroadcastChannel } from '../../../broadchannel';
+import { MediaType } from '../../../types';
 
 const filesStore = useFilesStore()
 const liveStore = useLiveStore()
@@ -45,10 +46,12 @@ function handleToggleEditting(e: Event) {
         <div class="h-12 grid place-items-center cursor-grab"><v-icon name="md-draghandle-round" /></div>
         <div
             class="relative size-12 rounded bg-white flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-700">
-            <div role="img" aria-label="Image thumbnail" class="w-full h-full bg-cover bg-center bg-no-repeat" :style="{
-                backgroundImage: `url(${archivo.isPlayable ? poster : archivo.url})`
-            }"></div>
-
+            <div v-show="archivo.mediaType !== MediaType.audio" role="img" aria-label="Image thumbnail"
+                class="w-full h-full bg-cover bg-center bg-no-repeat" :style="{
+                    backgroundImage: `url(${archivo.isPlayable ? poster : archivo.url})`
+                }"></div>
+            <v-icon name="md-musicnote-round" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                v-show="archivo.mediaType === MediaType.audio" />
         </div>
         <div class="flex min-w-0 flex-1">
             <div class="flex-1 min-w-0">

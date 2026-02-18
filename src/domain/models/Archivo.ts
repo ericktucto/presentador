@@ -1,3 +1,5 @@
+import { MediaType } from "../../types";
+
 export interface ArchivoInterface {
     name: string;
     url: string;
@@ -5,6 +7,7 @@ export interface ArchivoInterface {
     file: File;
     isMe(obj: ArchivoInterface | string): boolean;
     isPlayable: boolean
+    mediaType: MediaType
 }
 
 export class Archivo implements ArchivoInterface {
@@ -17,7 +20,20 @@ export class Archivo implements ArchivoInterface {
     }
 
     get isPlayable() {
-        return this.type.startsWith("video/");
+        return this.type.startsWith("video/") || this.type.startsWith("audio/");
+    }
+
+    get mediaType() {
+        if (this.type.startsWith("video/")) {
+            return MediaType.video
+        }
+        if (this.type.startsWith("audio/")) {
+            return MediaType.audio
+        }
+        if (this.type.startsWith("image/")) {
+            return MediaType.image
+        }
+        return MediaType.unknown
     }
 
     public isMe(obj: ArchivoInterface | string): boolean {

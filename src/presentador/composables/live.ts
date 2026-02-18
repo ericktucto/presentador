@@ -1,6 +1,9 @@
 import { onMounted } from "vue";
 import { useBroadcastChannel, WebRTCEvent } from "../../broadchannel";
 import { useLiveStore } from "../stores/live";
+import { MediaType } from "../../types";
+import { MdMusicnoteRound } from "oh-vue-icons/icons";
+import { buildSvgIcon, svgToDataUrl } from "../../utils/icons";
 
 export function useLive() {
     const liveStore = useLiveStore()
@@ -45,17 +48,65 @@ export function useLive() {
         })
     }
 
-    function getStream(video: HTMLVideoElement, url: string, typeFile: "image" | "video"): Promise<MediaStream | undefined> {
+    function buildCanvas(src: string): Promise<HTMLCanvasElement> {
+        return new Promise((resolve) => {
+            const img = new Image()
+            img.onload = () => {
+                const canvas = document.createElement("canvas")
+                const ctx = canvas.getContext("2d")!
+                canvas.width = img.width
+                canvas.height = img.height
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+                resolve(canvas)
+            }
+            img.src = src
+        })
+    }
+
+    function getStream(video: HTMLVideoElement, url: string, typeFile: MediaType): Promise<MediaStream | undefined> {
         return new Promise(async (resolve) => {
-            if (typeFile === 'video') {
+            if (typeFile === MediaType.video) {
                 await waitForVideoReady(video)
 
                 resolve(video.captureStream?.() ?? video.mozCaptureStream?.())
             }
-            const canvas = document.createElement('canvas')
+
+            if (typeFile === MediaType.audio) {
+                await waitForVideoReady(video)
+
+                const audioStream =
+                    video.captureStream?.() ?? video.mozCaptureStream?.()
+
+                if (!(audioStream instanceof MediaStream)) {
+                    resolve(undefined)
+                }
+
+                const img = svgToDataUrl(buildSvgIcon(MdMusicnoteRound.raw, '300px', 'white'))
+                const canvas = await buildCanvas(img)
+
+                const videoTrack = canvas.captureStream(30).getVideoTracks()[0]
+                const audioTrack = audioStream.getAudioTracks()[0]
+
+                const tracks: MediaStreamTrack[] = []
+
+                if (videoTrack) {
+                    tracks.push(videoTrack)
+                }
+
+                if (audioTrack) {
+                    tracks.push(audioTrack)
+                }
+
+                if (tracks.length === 0) {
+                    resolve(undefined)
+                }
+
+                resolve(new MediaStream(tracks))
+            }
 
             const img = new Image()
             img.onload = () => {
+                const canvas = document.createElement('canvas')
                 const ctx = canvas.getContext('2d')!
                 canvas.width = img.width
                 canvas.height = img.height
@@ -86,7 +137,7 @@ export function useLive() {
         console.log("DEBUG: Actived connections", peers.size)
     }
 
-    async function live(video: HTMLVideoElement, url: string, typeFile: "image" | "video") {
+    async function live(video: HTMLVideoElement, url: string, typeFile: MediaType) {
         if (peers.size === 0) {
             return;
         }

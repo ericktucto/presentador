@@ -2,6 +2,7 @@ import { ref, type Ref, watch } from "vue";
 import type { Archivo } from "../../domain/models/Archivo";
 import { duracionTotal, formatSecondsToMMSS } from "../../utils/mediaplay";
 import { useI18n } from "vue-i18n";
+import { MediaType } from "../../types";
 
 export function useLegend(archivo: Ref<Archivo | null | undefined>) {
     const { t } = useI18n()
@@ -20,15 +21,15 @@ export function useLegend(archivo: Ref<Archivo | null | undefined>) {
             return;
         }
         if (
-            a.file.type.startsWith("image/")
+            a.mediaType === MediaType.image
         ) {
             legend.value = t('image');
             return;
         }
-        if (a.file.type.startsWith("video/")) {
+        if (a.mediaType === MediaType.video || a.mediaType === MediaType.audio) {
             const tiempo = await duracionTotal(a)
             if (!cancelled) {
-                legend.value = `${t('video')} • ${formatSecondsToMMSS(tiempo)}`;
+                legend.value = `${t(a.mediaType === MediaType.video ? 'video' : 'audio')} • ${formatSecondsToMMSS(tiempo)}`;
                 total.value = tiempo
             }
             return;

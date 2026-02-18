@@ -43,7 +43,7 @@ function onClick() {
         trigger(
             PresentadorEvent.live,
             {
-                url: toRaw(archivo.value.url), type: archivo.value.isPlayable ? 'video' : 'image',
+                url: toRaw(archivo.value.url), type: archivo.value.mediaType,
             })
     }
 }
@@ -117,7 +117,7 @@ onMounted(() => {
                 </div>
                 <span class="text-xs font-mono font-bold text-slate-500" v-show="archivo?.isPlayable">{{
                     formatSecondsToMMSS(time) }} /
-                    03:45</span>
+                    {{ formatSecondsToMMSS(total) }}</span>
             </div>
             <div class="flex-1 items-center justify-center" :class="[archivo?.isPlayable ? 'flex' : 'hidden']">
                 <div

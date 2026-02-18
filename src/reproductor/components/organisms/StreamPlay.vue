@@ -89,14 +89,8 @@ onMounted(() => {
 });
 
 const videoRef = ref<HTMLVideoElement | null>(null)
-
-const tipo = ref<'image' | 'video'>('image')
-const media = ref('')
 </script>
 <template>
-    <div v-if="media && tipo === 'image'" class="bg-center bg-no-repeat bg-contain size-full"
-        :style="{ backgroundImage: `url('${media}')` }">
-    </div>
     <div class="bg-center flex bg-no-repeat bg-contain size-full items-center justify-center relative">
         <div role="status"
             class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8 bg-black/50 rounded-lg"

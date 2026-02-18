@@ -5,6 +5,7 @@ import { PresentadorEvent, ReproductorEvent, useBroadcastChannel } from '../../.
 import { useMediaStream } from '../../composables/mediastream';
 import { useLive } from '../../composables/live';
 import { useLiveStore } from '../../stores/live';
+import { MediaType } from '../../../types';
 
 const filesStore = useFilesStore()
 const liveStore = useLiveStore()
@@ -77,7 +78,7 @@ onMounted(() => {
         if (videoRef.value) {
             stop(videoRef)
             live(videoRef.value, e.data.data.url, e.data.data.type)
-            if (e.data.data.type === 'video') {
+            if (e.data.data.type === MediaType.video || MediaType.audio) {
                 play(videoRef)
             }
         }
