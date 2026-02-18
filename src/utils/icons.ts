@@ -3,5 +3,5 @@ export function buildSvgIcon(icon: string, size: string, color: string) {
 }
 
 export function svgToDataUrl(svg: string) {
-    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg)
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }

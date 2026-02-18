@@ -22,6 +22,10 @@ import {
     MdSavealtRound,
     MdDraghandleRound,
     MdMusicnoteRound,
+    MdCloseRound,
+    MdUploadRound,
+    FaUserAlt,
+    MdOpeninnewRound,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -47,6 +51,10 @@ addIcons(
     MdSavealtRound,
     MdDraghandleRound,
     MdMusicnoteRound,
+    MdCloseRound,
+    MdUploadRound,
+    FaUserAlt,
+    MdOpeninnewRound,
 );
 
 export default OhVueIcon;

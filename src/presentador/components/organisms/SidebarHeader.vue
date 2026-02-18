@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useSettingsStore } from '../../../stores/settings';
 import { useFilesStore } from '../../stores/files';
 import { useI18n } from 'vue-i18n';
 
@@ -19,7 +20,7 @@ function handleChange(e: InputEvent) {
                 </div>
                 <h1 class="text-lg font-bold tracking-tight">{{ t('titleSidebar') }}</h1>
             </div>
-            <button
+            <button @click="useSettingsStore().setModal(true)"
                 class="text-slate-400 hover:text-slate-100 transition-colors cursor-pointer hover:bg-slate-300/50 p-2 rounded-full size-10">
                 <v-icon name="io-settings-outline" />
             </button>
