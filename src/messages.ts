@@ -22,12 +22,14 @@ export const messages = {
         newImage: 'Nueva foto',
         cancel: 'Cancelar',
         saveChanges: 'Guardar Cambios',
+        lang: 'Idioma',
     },
     en: {
         selectRol: 'Select Role',
         selectRolLegend: 'Choose how you want to interact with the platform today.',
         presentador: 'Presenter',
         reproductor: 'Player',
+        confirm: 'Confirm',
         titleSidebar: 'Panel',
         inputSearchPlaceholder: 'Search...',
         playlist: 'Playlist',
@@ -45,5 +47,6 @@ export const messages = {
         newImage: 'New Image',
         cancel: 'Cancel',
         saveChanges: 'Save Changes',
+        lang: 'Language',
     },
 }

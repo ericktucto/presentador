@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 import { useSettingsStore } from "../../../stores/settings";
 import { Settings } from "../../../domain/models/Settings";
 
-const { t } = useI18n()
+const { t, locale } = useI18n({ useScope: "global" })
 const settingsStore = useSettingsStore()
 
 const inputImage = ref<HTMLImageElement | null>(null)
@@ -19,6 +19,7 @@ async function handleProfile(e: Event) {
 }
 function handleSave() {
     settingsStore.save(settings.value)
+    locale.value = settings.value.lang
     settingsStore.setModal(false)
 }
 </script>
@@ -40,6 +41,15 @@ function handleSave() {
                     <input
                         class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         style="text-transform: uppercase;" type="text" v-model="settings.name">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{
+                        t('lang') }}</label>
+                    <select v-model="settings.lang"
+                        class="custom-select w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-slate-900 dark:text-slate-100 cursor-pointer appearance-none">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                    </select>
                 </div>
                 <div class="space-y-4">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{

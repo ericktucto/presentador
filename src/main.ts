@@ -9,7 +9,7 @@ import { messages } from './messages'
 createApp(App)
     .use(createI18n({
         legacy: false,
-        locale: 'es',
+        locale: localStorage.getItem('lang') || 'en',
         fallbackLocale: 'en',
         messages
     }))
